@@ -27,7 +27,7 @@ function M.UI_drawOverlay()
     -- Print Time and Day
     local day = os.day()
     local rawDateString = "Day " .. day .. " " .. textutils.formatTime(os.time())
-    local dateStr = util.centerText(rawDateString, w - string.len(homeStr))
+    local dateStr = string.strsub(util.centerText(rawDateString, w), string.len(homeStr))
     term.write(dateStr)
     
     -- Print Username
