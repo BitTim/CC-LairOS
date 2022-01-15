@@ -4,6 +4,7 @@ local util = require("/Modules/util")
 local rawHomeStr = "Home"
 local accentColor = colors.green
 local barColor = colors.gray
+local minuteLength = 0.83
 
 -- Create Module table
 local M = {}
@@ -31,6 +32,7 @@ function M.UI_drawOverlay(parentTerm)
 
     -- Reset colors for further drawings
     parentTerm.setBackgroundColor(colors.black)
+    os.startTimer(minuteLength)
 end
 
 -- Return Module table
