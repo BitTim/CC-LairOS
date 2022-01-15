@@ -10,7 +10,7 @@ local minuteLength = 0.83
 local M = {}
 
 function M.UI_drawOverlay(parentTerm)
-    parentTerm.clear()
+    --parentTerm.clear()
 
     -- ==== Print Upper Bar ====
     parentTerm.setCursorPos(1, 1)
