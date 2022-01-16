@@ -5,8 +5,24 @@ local M = {}
 
 M.processes = {}
 M.activeProcess = nil
+M.winDim = {}
+
+function M.init(x, y, w, h)
+    M.winDim.x = x
+    M.winDim.y = y
+    M.winDim.w = w
+    M.winDim.h = h
+end
 
 function M.getProcessTitle(pid)
+    if pid == nil then return "" end
+    if M.processes[pid] == nil then return "" end
+    return M.processes[pid].title
+end
+
+function M.getActiveProcessTitle()
+    local pid = M.activeProcess
+
     if pid == nil then return "" end
     if M.processes[pid] == nil then return "" end
     return M.processes[pid].title
@@ -91,7 +107,8 @@ function M.startProcess(parentTerm, envVars, progPath, ...)
     local pid = #M.processes + 1
     local process = {}
     
-    process.title = fs.getName(progPath)
+    local fileName = fs.getName(progPath)
+    process.title = string.upper(string.sub(fileName, 1, 1)) .. string.sub(fileName, 2, #fileName - 4)
 
     log.log("PROCSTART", "Created pID: " .. pid .. " and title: " .. process.title)
 
@@ -104,8 +121,7 @@ function M.startProcess(parentTerm, envVars, progPath, ...)
     end
 
     log.log("PROCSTART", "Creating window for " .. pid .. " (" .. process.title .. ")")
-    local w, h = parentTerm.getSize()
-    process.window = window.create(parentTerm, 1, 2, w, h - 1)
+    process.window = window.create(parentTerm, M.winDim.x, M.winDim.y, M.winDim.w, M.winDim.h)
 
     process.term = process.window
 
