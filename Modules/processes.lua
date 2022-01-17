@@ -102,15 +102,18 @@ function M.resumeAllProcesses(e, ...)
     end
 end
 
-function M.startProcess(parentTerm, envVars, progPath, ...)
+function M.startProcess(parentTerm, envVars, progPath, processTitle, ...)
     log.log("PROCSTART", "Starting process " .. progPath)
 
     local args = table.pack(...)
     local pid = #M.processes + 1
     local process = {}
+
+    processTitle = processTitle or nil
     
     local fileName = fs.getName(progPath)
-    process.title = string.upper(string.sub(fileName, 1, 1)) .. string.sub(fileName, 2, #fileName - 4)
+    if processTitle == nil then process.title = string.upper(string.sub(fileName, 1, 1)) .. string.sub(fileName, 2, #fileName - 4)
+    else process.title = processTitle end
 
     log.log("PROCSTART", "Created pID: " .. pid .. " and title: " .. process.title)
 

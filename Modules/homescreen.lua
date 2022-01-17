@@ -129,8 +129,8 @@ function M.UI_drawPageSelector()
     log.log("HSDPS", "Adding click zone, x: " .. startPos .. ", y: " .. h .. ", w: 1, h: 1")
     log.log("HSDPS", "Adding click zone, x: " .. startPos + selStrWidth - 1 .. ", y: " .. h .. ", w: 1, h: 1")
 
-    M.clickZones[#M.clickZones + 1] = {x = startPos, y = h, w = 1, h = 1, action = M.prevPage}
-    M.clickZones[#M.clickZones + 1] = {x = startPos + selStrWidth - 1, y = h, w = 1, h = 1, action = M.nextPage}
+    M.clickZones[#M.clickZones + 1] = {window = M.window, x = startPos, y = h, w = 1, h = 1, action = M.prevPage}
+    M.clickZones[#M.clickZones + 1] = {window = M.window, x = startPos + selStrWidth - 1, y = h, w = 1, h = 1, action = M.nextPage}
 
     term.setTextColor(textColor)
     term.setBackgroundColor(wallpaperColor)
@@ -193,7 +193,7 @@ function M.UI_drawIcons()
             util.drawImage(x, y, M.apps[appID].icon)
             
             log.log("HSDICO", "Adding click zone at x: " .. x .. ", y: " .. y .. ", w: " .. iconSize.w .. ", h: " .. iconSize.h + iconTextHeight)
-            M.clickZones[#M.clickZones + 1] = {x = x, y = y, w = iconSize.w, h = iconSize.h + iconTextHeight, action = M.startApp, actionArg = appID}
+            M.clickZones[#M.clickZones + 1] = {window = M.window, x = x, y = y, w = iconSize.w, h = iconSize.h + iconTextHeight, action = M.startApp, actionArg = appID}
             
             log.log("HSDICO", "Printing name of app under icon")
             
@@ -220,6 +220,8 @@ function M.UI_drawIcons()
 end
 
 function M.UI_drawHomescreen()
+    log.log("HSDRAW", "Drawing homescreen")
+
     term.redirect(M.window)
     term.clear()
 
@@ -231,30 +233,48 @@ function M.UI_drawHomescreen()
     M.UI_drawIcons()
 
     term.redirect(M.parentTerm)
+
+    log.log("HSDRAW", "Finished")
 end
 
 function M.nextPage()
+    log.log("HSNP", "Switching to next page")
+    
     M.currentPage = M.currentPage + 1
     if M.currentPage > M.pages then M.currentPage = M.pages
     else M.UI_drawHomescreen() end
+
+    log.log("HSNP", "Finished")
 end
 
 function M.prevPage()
+    log.log("HSPP", "Switching to previous page")
+
     M.currentPage = M.currentPage - 1
     if M.currentPage < 1 then M.currentPage = 1
     else M.UI_drawHomescreen() end
+
+    log.log("HSPP", "Finished")
 end
 
 function M.startApp(appID)
+    log.log("HSSAPP", "Starting app " .. appID .. " (" .. M.apps[appID].name .. ")")
+
     M.window.setVisible(false)
     
-    local pid = M.processes.startProcess(M.parentTerm, {["shell"] = shell}, M.apps[appID].entry)
+    local pid = M.processes.startProcess(M.parentTerm, {["shell"] = shell}, M.apps[appID].entry, M.apps[appID].name)
     M.processes.selectProcess(pid)
+
+    log.log("HSSAPP", "Finished")
 end
 
 function M.open()
-    M.processes[M.processes.activeProcess].window.setVisible(false)
+    log.log("HSOPEN", "Opening homescreen")
+
+    M.processes.processes[M.processes.activeProcess].window.setVisible(false)
     M.window.setVisible(true)
+
+    log.log("HSOPEN", "Finished")
 end
 
 -- Return module table

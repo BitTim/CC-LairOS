@@ -41,7 +41,6 @@ function M.UI_drawOverlay(activeProcessTitle, topOnly)
     log.log("OVDRAW", "Drawing overlay. Top only: " .. textutils.serialize(topOnly))
     
     -- ==== Print Upper Bar ====
-    M.topBarWin.clear()
     M.topBarWin.setCursorPos(1, 1)
     M.topBarWin.setTextColor(textColor)
     M.topBarWin.setBackgroundColor(barColor)
@@ -69,7 +68,6 @@ function M.UI_drawOverlay(activeProcessTitle, topOnly)
     
     -- ==== Print Lower Bar ====
     if not topOnly then
-        M.lowBarWin.clear()
         M.lowBarWin.setCursorPos(1, 1)
         M.lowBarWin.setTextColor(textColor)
         M.lowBarWin.setBackgroundColor(barColor)
@@ -89,7 +87,7 @@ function M.UI_drawOverlay(activeProcessTitle, topOnly)
         M.lowBarWin.setTextColor(textColor)
 
         log.log("OVDRAW", "Adding click zone, x: " .. offset .. ", y: 1, w: 2, h: 1")
-        M.clickZones[#M.clickZones + 1] = {x = offset, y = 1, w = 2, h = 1, action = M.clickEvent, actionArg = "home"}
+        M.clickZones[#M.clickZones + 1] = {window = M.lowBarWin, x = offset, y = 1, w = 2, h = 1, action = M.clickEvent, actionArg = "home"}
 
         M.lowBarWin.write(homeBtn)
         M.lowBarWin.setTextColor(textColor)
@@ -102,7 +100,7 @@ function M.UI_drawOverlay(activeProcessTitle, topOnly)
         M.lowBarWin.setTextColor(textColor)
         
         log.log("OVDRAW", "Adding click zone, x: " .. offset + 4 .. ", y: 1, w: 2, h: 1")
-        M.clickZones[#M.clickZones + 1] = {x = offset + 4, y = 1, w = 2, h = 1, action = M.clickEvent, actionArg = "task"}
+        M.clickZones[#M.clickZones + 1] = {window = M.lowBarWin, x = offset + 4, y = 1, w = 2, h = 1, action = M.clickEvent, actionArg = "task"}
 
         M.lowBarWin.write(taskBtn)
         M.lowBarWin.setTextColor(textColor)

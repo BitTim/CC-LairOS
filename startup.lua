@@ -1,5 +1,6 @@
 local processes = require("/Modules/processes")
 local log = require("/Modules/log")
+local util = require("/Modules/util")
 local clickHandler = require("/Modules/clickHandler")
 local overlay = require("/Modules/overlay")
 local homescreen = require("/Modules/homescreen")
@@ -15,6 +16,7 @@ local homescreenWin = window.create(parentTerm, 1, 2, w, h - 2)
 local taskmanagerWin = window.create(parentTerm, 1, 2, w, h - 2)
 
 log.init()
+log.log("INIT", "Initializing everything")
 processes.init(log, 1, 2, w, h - 2)
 overlay.init(log, topBarWin, lowBarWin, homescreen, taskmanager)
 homescreen.init(log, parentTerm, homescreenWin, appPath, processes)
@@ -24,36 +26,49 @@ parentTerm.clear()
 overlay.UI_drawOverlay("Home")
 homescreen.UI_drawHomescreen()
 
+log.log("INIT", "Finished")
+
 while true do
+    log.log("MAIN", "Loop start")
     local eventData = table.pack(os.pullEventRaw())
     local e = eventData[1]
     
+    log.log("MAIN", "Get Active Process Title")
     local activeProcessTitle = processes.getActiveProcessTitle()
     if activeProcessTitle == "" then activeProcessTitle = "Home" end
 
+    log.log("MAIN", "Check if process is running")
     if processes.activeProcess == nil then
+        log.log("MAIN", "No, opening homescreen")
         homescreen.window.setVisible(true)
         taskmanager.window.setVisible(false)
-    else homescreen.window.setVisible(false) end
+    end
+
+    log.log("MAIN", "Draw Overlay")
 
     overlay.UI_drawOverlay(activeProcessTitle, true)
     processes.checkAllProcessesRunning()
 
+    log.log("MAIN", "Match event and resume process")
     if e == "char" or e == "key" or e == "key_up" or e == "paste" or e == "terminate" then
         processes.resumeProcess(processes.activeProcess, table.unpack(eventData, 1, eventData.n))
 
     elseif e == "mouse_click" then
         local button, x, y = eventData[2], eventData[3], eventData[4]
 
+        log.log("MAIN", "Mouse event, iterating over click zones")
+
         local clickZones = {}
         
+        util.appendTable(clickZones, overlay.clickZones)
+        util.appendTable(clickZones, homescreen.clickZones)
     
-        for i = 1, #homescreen.clickZones do
-            local zone = homescreen.clickZones[i]
+        for i = 1, #clickZones do
+            local zone = clickZones[i]
 
-            local _, wy = homescreenWin.getPosition()
+            local _, wy = zone.window.getPosition()
 
-            if clickHandler.checkCliked(zone, x, y, wy) then
+            if clickHandler.checkClicked(zone, x, y, wy - 1) then
                 clickHandler.execAction(zone)
                 break
             end
@@ -68,9 +83,9 @@ while true do
     else
         processes.resumeAllProcesses(table.unpack(eventData, 1, eventData.n ) )
     end
-end
 
--- ToDo: Add logs everywhere
+    log.log("MAIN", "Loop end")
+end
 
 -- Shutdown
 log.close()
