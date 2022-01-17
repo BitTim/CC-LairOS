@@ -1,4 +1,4 @@
-local log = require("/Modules/log")
+local log = nil
 
 -- Create Modeul table 
 local M = {}
@@ -7,7 +7,9 @@ M.processes = {}
 M.activeProcess = nil
 M.winDim = {}
 
-function M.init(x, y, w, h)
+function M.init(iLog, x, y, w, h)
+    log = iLog
+    
     M.winDim.x = x
     M.winDim.y = y
     M.winDim.w = w
