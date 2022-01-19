@@ -22,6 +22,8 @@ overlay.init(log, topBarWin, lowBarWin, homescreen, taskmanager)
 homescreen.init(log, parentTerm, homescreenWin, appPath, processes)
 taskmanager.init(log, taskmanagerWin)
 
+homescreen.open()
+
 parentTerm.clear()
 overlay.UI_drawOverlay("Home")
 homescreen.UI_drawHomescreen()
@@ -36,13 +38,6 @@ while true do
     log.log("MAIN", "Get Active Process Title")
     local activeProcessTitle = processes.getActiveProcessTitle()
     if activeProcessTitle == "" then activeProcessTitle = "Home" end
-
-    log.log("MAIN", "Check if process is running")
-    if processes.activeProcess == nil then
-        log.log("MAIN", "No, opening homescreen")
-        homescreen.window.setVisible(true)
-        taskmanager.window.setVisible(false)
-    end
 
     log.log("MAIN", "Draw Overlay")
 
@@ -79,6 +74,21 @@ while true do
     elseif e == "mouse_drag" or e == "mouse_up" or e == "mouse_scroll" then
         local p1, x, y = eventData[2], eventData[3], eventData[4]
         processes.resumeProcess(processes.activeProcess, e, p1, x, y -1)
+
+    elseif e == "process_killed" then
+        processes.resumeAllProcesses(table.unpack(eventData, 1, eventData.n ) )
+
+    elseif e == "process_start" then
+        local appID = eventData[2]
+        local pid = processes.startProcess(parentTerm, {["shell"] = shell}, homescreen.apps[appID].entry, homescreen.apps[appID].name)
+        processes.selectProcess(pid)
+        processes.resumeAllProcesses(table.unpack(eventData, 1, eventData.n ) )
+
+    elseif e == "sysui_open" then
+        processes.processes[processes.activeProcess].window.setVisible(false)
+        if eventData[2] == "home" then homescreen.open() end
+        if eventData[2] == "task" then taskmanager.open() end
+        processes.resumeAllProcesses(table.unpack(eventData, 1, eventData.n ) )
 
     else
         processes.resumeAllProcesses(table.unpack(eventData, 1, eventData.n ) )

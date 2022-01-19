@@ -124,8 +124,8 @@ end
 function M.clickEvent(arg)
     log.log("OVCLICK", "Received click event with arg: " .. arg)
 
-    if arg == "home" then M.homescreen.open() end
-    if arg == "task" then M.taskmanager.open() end
+    if arg == "home" then os.queueEvent("sysui_open", "home") end
+    if arg == "task" then os.queueEvent("sysui_open", "task") end
 end
 
 -- Return Module table

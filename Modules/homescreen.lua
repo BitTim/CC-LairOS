@@ -26,11 +26,10 @@ M.apps = {}
 
 M.window = nil
 M.parentTerm = nil
-M.processes = nil
 
 M.clickZones = {}
 
-function M.init(iLog, parentTerm, window, appPath, processes)
+function M.init(iLog, parentTerm, window, appPath)
     log = iLog
     
     log.log("HSINIT", "Initializing homescreen")
@@ -39,7 +38,6 @@ function M.init(iLog, parentTerm, window, appPath, processes)
     M.parentTerm = parentTerm
 
     M.appPath = appPath
-    M.processes = processes
     
     log.log("HSINIT", "Finished")
 end
@@ -261,9 +259,7 @@ function M.startApp(appID)
     log.log("HSSAPP", "Starting app " .. appID .. " (" .. M.apps[appID].name .. ")")
 
     M.window.setVisible(false)
-    
-    local pid = M.processes.startProcess(M.parentTerm, {["shell"] = shell}, M.apps[appID].entry, M.apps[appID].name)
-    M.processes.selectProcess(pid)
+    os.queueEvent("process_start", appID)
 
     log.log("HSSAPP", "Finished")
 end
@@ -271,7 +267,6 @@ end
 function M.open()
     log.log("HSOPEN", "Opening homescreen")
 
-    M.processes.processes[M.processes.activeProcess].window.setVisible(false)
     M.window.setVisible(true)
 
     log.log("HSOPEN", "Finished")
