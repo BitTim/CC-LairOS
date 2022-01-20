@@ -85,7 +85,7 @@ while true do
         processes.resumeAllProcesses(table.unpack(eventData, 1, eventData.n ) )
 
     elseif e == "sysui_open" then
-        processes.processes[processes.activeProcess].window.setVisible(false)
+        if not processes.activeProcess == nil then processes.processes[processes.activeProcess].window.setVisible(false) end
         if eventData[2] == "home" then homescreen.open() end
         if eventData[2] == "task" then taskmanager.open() end
         processes.resumeAllProcesses(table.unpack(eventData, 1, eventData.n ) )
