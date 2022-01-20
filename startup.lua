@@ -20,7 +20,7 @@ log.log("INIT", "Initializing everything")
 processes.init(log, 1, 2, w, h - 2)
 overlay.init(log, topBarWin, lowBarWin, homescreen, taskmanager)
 homescreen.init(log, parentTerm, homescreenWin, appPath, processes)
-taskmanager.init(log, taskmanagerWin)
+taskmanager.init(log, taskmanagerWin, parentTerm, processes)
 
 homescreen.open()
 
