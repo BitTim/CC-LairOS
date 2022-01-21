@@ -264,6 +264,14 @@ function M.startApp(appID)
     log.log("HSSAPP", "Finished")
 end
 
+function M.close()
+    log.log("HSCLOSE", "Closing homescreen")
+    
+    M.window.setVisible(false)
+    
+    log.log("HSCLOSE", "Finished")
+end
+
 function M.open()
     log.log("HSOPEN", "Opening homescreen")
 

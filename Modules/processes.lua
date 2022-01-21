@@ -161,7 +161,6 @@ function M.killProcess(pid)
     log.log("PROCKILL", "Selecting process nil")
     M.selectProcess(nil)
     
-    os.queueEvent("process_killed", pid)
     os.queueEvent("sysui_open", "home")
 
     log.log("PROCKILL", "Finished")
