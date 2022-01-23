@@ -16,8 +16,10 @@ local homescreenWin = window.create(parentTerm, 1, 2, w, h - 2)
 local taskmanagerWin = window.create(parentTerm, 1, 2, w, h - 2)
 
 local sysUI = "Home"
+local logging = false
 
 log.init()
+log.setLogging(logging)
 log.log("INIT", "Initializing everything")
 processes.init(log, 1, 2, w, h - 2)
 overlay.init(log, topBarWin, lowBarWin, homescreen, taskmanager)
@@ -65,9 +67,7 @@ while true do
         for i = 1, #clickZones do
             local zone = clickZones[i]
 
-            local _, wy = zone.window.getPosition()
-
-            if clickHandler.checkClicked(zone, x, y, wy - 1) then
+            if clickHandler.checkClicked(zone, x, y) then
                 clickHandler.execAction(zone)
                 break
             end
